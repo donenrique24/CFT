@@ -22,6 +22,6 @@
 
 .checkIfJ4RisAvailable <- function() {
   if (length(find.package("J4R", quiet= TRUE)) == 0) {
-    install.packages("https://sourceforge.net/projects/repiceasource/files/J4R_1.0.0.tar.gz/download", repos = NULL,  type="source")
+    install.packages("https://sourceforge.net/projects/repiceasource/files/J4R_1.0.1.tar.gz/download", repos = NULL,  type="source")
   }
 }
