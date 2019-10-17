@@ -83,7 +83,7 @@ createSample <- function(dataSet, plotIdField, speciesIdField) {
 
 
 #'
-#' Estimate Dissimilarity Indices
+#' Estimates Dissimilarity Indices
 #'
 #' It estimates the dissimilarity indices of Simpson, Sorensen and
 #' nestedness from a sample.
@@ -135,3 +135,39 @@ getDissimilarityEstimates <- function(dissimilarityEstimator, sample, population
 
   return(data.frame(n, Simpson, varSimpson, stdErrSimpson, Sorensen, varSorensen, stdErrSorensen, Nestedness, varNestedness, stdErrNestedness, Alpha, Gamma))
 }
+
+
+#'
+#' Calculates Baselga's Dissimilarity Indices
+#'
+#' It estimates the dissimilarity indices of Simpson, Sorensen and
+#' nestedness from a sample.
+#'
+#' @param dissimilarityEstimator a java.object that can estimate the dissimilarity indices. It
+#' should be generated using the createDissimilarityIndicesEstimator function
+#' @param sample a java.object instance that stands for a Map in the Java environment. It should be
+#' generated using the createSample function
+#' @return a data.frame object with the estimated dissimilarity indices and their standard errors
+#'
+#' @export
+getBaselgaDissimilarityIndices <- function(dissimilarityEstimator, sample) {
+  n <- J4R::callJavaMethod(sample, "size")
+  messageToBeDisplayed <- paste("Calculating Baselga's multiple-site dissimilarity indices from a sample of ", n, " plots...", sep="")
+  if (n > 500) {
+    messageToBeDisplayed <- paste(messageToBeDisplayed, " This may take some time!", sep="")
+  }
+  message(messageToBeDisplayed)
+  resultMap <- J4R::callJavaMethod(dissimilarityEstimator, "getMultiplesiteDissimilarityIndices", sample)
+
+  simpsonEnum <- J4R::createJavaObject("canforservutility.biodiversity.indices.MultipleSiteIndex$BetaIndex", "Simpson")
+  sorensenEnum <- J4R::createJavaObject("canforservutility.biodiversity.indices.MultipleSiteIndex$BetaIndex", "Sorensen")
+  nestednessEnum <- J4R::createJavaObject("canforservutility.biodiversity.indices.MultipleSiteIndex$BetaIndex", "Nestedness")
+
+  Simpson <- J4R::callJavaMethod(resultMap, "get", simpsonEnum)
+  Sorensen <- J4R::callJavaMethod(resultMap, "get", sorensenEnum)
+  Nestedness <- J4R::callJavaMethod(resultMap, "get", nestednessEnum)
+
+  return(data.frame(Simpson, Sorensen, Nestedness))
+}
+
+
