@@ -105,32 +105,31 @@ getDissimilarityEstimates <- function(dissimilarityEstimator, sample, population
   }
   message(messageToBeDisplayed)
   leaveOneOutMode <- J4R::createJavaObject("canforservutility.biodiversity.indices.MultipleSiteIndex$Mode", "LeaveOneOut")
-  resultMap <- J4R::callJavaMethod(dissimilarityEstimator, "getDissimilarityIndicesMultiplesiteEstimator", sample, as.integer(populationSize), TRUE, leaveOneOutMode)
+  dissimilarityEstimates <- J4R::callJavaMethod(dissimilarityEstimator, "getDissimilarityIndicesMultiplesiteEstimator", sample, as.integer(populationSize), TRUE, leaveOneOutMode)
 
-  alphaEnum <- J4R::createJavaObject("canforservutility.biodiversity.indices.MultipleSiteIndex$DiversityIndex", "Alpha")
-  gammaEnum <- J4R::createJavaObject("canforservutility.biodiversity.indices.MultipleSiteIndex$DiversityIndex", "Gamma")
-  betaEnum <- J4R::createJavaObject("canforservutility.biodiversity.indices.MultipleSiteIndex$DiversityIndex", "Beta")
+  simpsonEnum <- J4R::createJavaObject("canforservutility.biodiversity.indices.DiversityIndices$BetaIndex", "Simpson")
+  sorensenEnum <- J4R::createJavaObject("canforservutility.biodiversity.indices.DiversityIndices$BetaIndex", "Sorensen")
+  nestednessEnum <- J4R::createJavaObject("canforservutility.biodiversity.indices.DiversityIndices$BetaIndex", "Nestedness")
 
-  alphaEstimate <- J4R::callJavaMethod(resultMap, "get", alphaEnum)
-  gammaEstimate <- J4R::callJavaMethod(resultMap, "get", gammaEnum)
-  betaEstimate <- J4R::callJavaMethod(resultMap, "get", betaEnum)
+  alphaEstimate <- J4R::callJavaMethod(dissimilarityEstimates, "getAlphaDiversity")
+  gammaEstimate <- J4R::callJavaMethod(dissimilarityEstimates, "getGammaDiversity")
+  simpsonEstimate <- J4R::callJavaMethod(dissimilarityEstimates, "getBetaDiversity", simpsonEnum)
+  sorensenEstimate <- J4R::callJavaMethod(dissimilarityEstimates, "getBetaDiversity", sorensenEnum)
+  nestednessEstimate <- J4R::callJavaMethod(dissimilarityEstimates, "getBetaDiversity", nestednessEnum)
 
   Alpha <- J4R::callJavaMethod(J4R::callJavaMethod(alphaEstimate, "getMean"), "getSumOfElements")
   Gamma <- J4R::callJavaMethod(J4R::callJavaMethod(gammaEstimate, "getMean"), "getSumOfElements")
 
-  meanBetaEstimate <- J4R::callJavaMethod(betaEstimate, "getMean")
-  varBetaEstimate <- J4R::callJavaMethod(betaEstimate, "getVariance")
-
-  Simpson <- J4R::callJavaMethod(meanBetaEstimate, "getSumOfElements", as.integer(0), as.integer(0), as.integer(0), as.integer(0))
-  varSimpson <- J4R::callJavaMethod(varBetaEstimate, "getSumOfElements", as.integer(0), as.integer(0), as.integer(0), as.integer(0))
+  Simpson <- J4R::callJavaMethod(J4R::callJavaMethod(simpsonEstimate, "getMean"), "getSumOfElements")
+  varSimpson <- J4R::callJavaMethod(J4R::callJavaMethod(simpsonEstimate, "getVariance"), "getSumOfElements")
   stdErrSimpson <- varSimpson^.5
 
-  Sorensen <- J4R::callJavaMethod(meanBetaEstimate, "getSumOfElements", as.integer(1), as.integer(1), as.integer(0), as.integer(0))
-  varSorensen <- J4R::callJavaMethod(varBetaEstimate, "getSumOfElements", as.integer(1), as.integer(1), as.integer(1), as.integer(1))
+  Sorensen <- J4R::callJavaMethod(J4R::callJavaMethod(sorensenEstimate, "getMean"), "getSumOfElements")
+  varSorensen <- J4R::callJavaMethod(J4R::callJavaMethod(sorensenEstimate, "getVariance"), "getSumOfElements")
   stdErrSorensen <- varSorensen^.5
 
-  Nestedness <- J4R::callJavaMethod(meanBetaEstimate, "getSumOfElements", as.integer(2), as.integer(2), as.integer(0), as.integer(0))
-  varNestedness <- J4R::callJavaMethod(varBetaEstimate, "getSumOfElements", as.integer(2), as.integer(2), as.integer(2), as.integer(2))
+  Nestedness <- J4R::callJavaMethod(J4R::callJavaMethod(nestednessEstimate, "getMean"), "getSumOfElements")
+  varNestedness <- J4R::callJavaMethod(J4R::callJavaMethod(nestednessEstimate, "getVariance"), "getSumOfElements")
   stdErrNestedness <- varNestedness^.5
 
   return(data.frame(n, Simpson, varSimpson, stdErrSimpson, Sorensen, varSorensen, stdErrSorensen, Nestedness, varNestedness, stdErrNestedness, Alpha, Gamma))
@@ -140,10 +139,10 @@ getDissimilarityEstimates <- function(dissimilarityEstimator, sample, population
 #'
 #' Calculates Baselga's Dissimilarity Indices
 #'
-#' It estimates the dissimilarity indices of Simpson, Sorensen and
-#' nestedness from a sample.
+#' It computes Baselga's multiple-site dissimilarity indices of Simpson, Sorensen and
+#' nestedness from a set of assemblages.
 #'
-#' @param dissimilarityEstimator a java.object that can estimate the dissimilarity indices. It
+#' @param dissimilarityEstimator a java.object that can compute or estimate the dissimilarity indices. It
 #' should be generated using the createDissimilarityIndicesEstimator function
 #' @param sample a java.object instance that stands for a Map in the Java environment. It should be
 #' generated using the createSample function
@@ -157,15 +156,15 @@ getBaselgaDissimilarityIndices <- function(dissimilarityEstimator, sample) {
     messageToBeDisplayed <- paste(messageToBeDisplayed, " This may take some time!", sep="")
   }
   message(messageToBeDisplayed)
-  resultMap <- J4R::callJavaMethod(dissimilarityEstimator, "getMultiplesiteDissimilarityIndices", sample)
+  dissimilarityIndices <- J4R::callJavaMethod(dissimilarityEstimator, "getMultiplesiteDissimilarityIndices", sample)
 
-  simpsonEnum <- J4R::createJavaObject("canforservutility.biodiversity.indices.MultipleSiteIndex$BetaIndex", "Simpson")
-  sorensenEnum <- J4R::createJavaObject("canforservutility.biodiversity.indices.MultipleSiteIndex$BetaIndex", "Sorensen")
-  nestednessEnum <- J4R::createJavaObject("canforservutility.biodiversity.indices.MultipleSiteIndex$BetaIndex", "Nestedness")
+  simpsonEnum <- J4R::createJavaObject("canforservutility.biodiversity.indices.DiversityIndices$BetaIndex", "Simpson")
+  sorensenEnum <- J4R::createJavaObject("canforservutility.biodiversity.indices.DiversityIndices$BetaIndex", "Sorensen")
+  nestednessEnum <- J4R::createJavaObject("canforservutility.biodiversity.indices.DiversityIndices$BetaIndex", "Nestedness")
 
-  Simpson <- J4R::callJavaMethod(resultMap, "get", simpsonEnum)
-  Sorensen <- J4R::callJavaMethod(resultMap, "get", sorensenEnum)
-  Nestedness <- J4R::callJavaMethod(resultMap, "get", nestednessEnum)
+  Simpson <- J4R::callJavaMethod(dissimilarityIndices, "getBetaDiversity", simpsonEnum)
+  Sorensen <- J4R::callJavaMethod(dissimilarityIndices, "getBetaDiversity", sorensenEnum)
+  Nestedness <- J4R::callJavaMethod(dissimilarityIndices, "getBetaDiversity", nestednessEnum)
 
   return(data.frame(Simpson, Sorensen, Nestedness))
 }
