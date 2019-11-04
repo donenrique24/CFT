@@ -7,7 +7,7 @@
 getBaselgaDissimilarityIndices(dissimilarityEstimator, sample)
 }
 \arguments{
-\item{dissimilarityEstimator}{a java.object that can estimate the dissimilarity indices. It
+\item{dissimilarityEstimator}{a java.object that can compute or estimate the dissimilarity indices. It
 should be generated using the createDissimilarityIndicesEstimator function}
 
 \item{sample}{a java.object instance that stands for a Map in the Java environment. It should be
@@ -17,6 +17,6 @@ generated using the createSample function}
 a data.frame object with the estimated dissimilarity indices and their standard errors
 }
 \description{
-It estimates the dissimilarity indices of Simpson, Sorensen and
-nestedness from a sample.
+It computes Baselga's multiple-site dissimilarity indices of Simpson, Sorensen and
+nestedness from a set of assemblages.
 }

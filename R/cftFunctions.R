@@ -21,7 +21,12 @@
 }
 
 .checkIfJ4RisAvailable <- function() {
-  if (length(find.package("J4R", quiet= TRUE)) == 0) {
-    install.packages("https://sourceforge.net/projects/repiceasource/files/J4R_1.0.1.tar.gz/download", repos = NULL,  type="source")
+  minimumVersion <- c(1,0,2)
+  versionString <- paste(minimumVersion, collapse = ".")
+  if (length(find.package("J4R", quiet= TRUE)) == 0 || utils::packageVersion("J4R") < versionString) {
+    message(paste("Installing J4R version", versionString))
+    urlString <- paste("https://sourceforge.net/projects/repiceasource/files/J4R_", versionString, ".tar.gz/download", sep="")
+    install.packages(urlString, repos = NULL,  type="source")
   }
 }
+
