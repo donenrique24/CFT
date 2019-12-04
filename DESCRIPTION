@@ -7,6 +7,11 @@ Maintainer: Mathieu Fortin <mathieu.fortin.re@gmail.com>
 Description: Provide some models applied to forestry that were developed in the Canadian context. 
 URL: https://sourceforge.net/p/mrnfforesttools/wiki/CFT/
 Depends: R (>= 2.10)
+Imports: 
+    graphics,
+    methods, 
+    stats, 
+    utils
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
