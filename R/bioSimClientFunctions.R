@@ -158,3 +158,71 @@ getAnnualNormals <- function(period, variables, id, latDeg, longDeg, elevM) {
 getMonthlyNormals <- function(period, variables, id, latDeg, longDeg, elevM) {
   return(getNormals(period, variables, id, latDeg, longDeg, elevM, NULL))
 }
+
+#'
+#' Returns the list of models available in BioSim for post weather generation processing.
+#'
+#' @export
+getModelList <- function() {
+  J4R::checkIfExtensionsContain(myJavaLibrary = "mrnf-foresttools.jar",
+                                packageName = "CFT",
+                                automaticRestart = TRUE)
+  return(J4R::getAllValuesFromListObject(J4R::callJavaMethod("canforservutility.biosim.BioSimClient", "getModelList")))
+}
+
+#'
+#' Generates the climate for particular locations and applies a model on this generated climate.
+#'
+#' @param fromYr the starting date (yr) of the period (inclusive)
+#' @param toYr the ending date (yr) of the period (inclusive)
+#' @param variables the variables of interest typically a vector such as c("TN", "TX", "P") for minimum temperature, maximum temperature and precipitation
+#' @param id a vector with the ids of the plots
+#' @param latDeg the latitudes of the plots
+#' @param longDeg the longitudes of the plots
+#' @param elevM the elevations of the plots (can contain some NA, in which case BioSim relies on a digital elevation model)
+#' @param modelName a character. Should be one of the models listed in the available models (see the getModelList() method)
+#' @param isEphemeral a logical. If set to true, the generated climate is not stored on the server, which implies a greater
+#' computational burden and inconsistencies if different models are applied on the same locations.
+#'
+#' @export
+getClimateVariables <- function(fromYr, toYr, variables, id, latDeg, longDeg, elevM, modelName, isEphemeral) {
+  if (length(id) != length(latDeg)) {
+    stop("The arguments id, latDeg, longDeg and elevM must have the same length!")
+  }
+  J4R::checkIfExtensionsContain(myJavaLibrary = "mrnf-foresttools.jar",
+                                packageName = "CFT",
+                                automaticRestart = TRUE)
+  listOfModels <- getModelList()
+  if (!(modelName %in% listOfModels)) {
+    stop(paste("The model", modelName, "is not recognized by BioSim. Please see the list of available models. Call the getModelList() function."))
+  }
+  jPlots <- .createBioSimPlots(latDeg, longDeg, elevM)
+  jVariables <- .createVariableList(variables)
+
+  maps <- J4R::callJavaMethod("canforservutility.biosim.BioSimClient",
+                      "getClimateVariables",
+                      as.integer(fromYr),
+                      as.integer(toYr),
+                      jVariables,
+                      jPlots,
+                      modelName,
+                      isEphemeral)
+  listOfPlots <- J4R::getAllValuesFromListObject(jPlots)
+
+  latDeg <- J4R::callJavaMethod(listOfPlots, "getLatitudeDeg")
+  longDeg <- J4R::callJavaMethod(listOfPlots, "getLongitudeDeg")
+  elevM <- J4R::callJavaMethod(listOfPlots, "getElevationM")
+
+  myDataFrame <- NULL
+  refDataFrame <- data.frame(id, latDeg, longDeg, elevM)
+  for (i in 1:length(listOfPlots)) {
+    plot <- listOfPlots[[i]]
+    for (year in fromYr:toYr) {
+      subDataFrame <- refDataFrame[i,]
+      subDataFrame[1, "date"] <- year
+      subDataFrame[1, modelName] <- J4R::callJavaMethod(J4R::callJavaMethod(maps,"get", plot), "get", year)
+      myDataFrame <- rbind(myDataFrame, subDataFrame)
+    }
+  }
+  return(myDataFrame)
+}
