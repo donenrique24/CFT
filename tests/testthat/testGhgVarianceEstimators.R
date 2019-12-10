@@ -69,12 +69,12 @@ test_that("Testing ipcc propagation-based variance estimator - Case study 2", {
 })
 
 test_that("Testing ipcc Monte Carlo variance estimator - Case study 2", {
-  expect_equal(abs(1 - E.mc@mean/841.7076) < 2E-3, TRUE)
-  expect_equal(abs(1 - E.mc@variance/216352.716885812) < 1E-2, TRUE)
+  expect_equal(abs(1 - E.mc@mean/841.7076) < 4E-3, TRUE)
+  expect_equal(abs(1 - E.mc@variance/216352.716885812) < 1.5E-2, TRUE)
 })
 
 test_that("Testing rescaled Monte Carlo variance estimator - Case study 2", {
-  expect_equal(abs(1 - E.mcRes@mean/841.7076) < 2E-3, TRUE)
-  expect_equal(abs(1 - E.mcRes@variance/209769.904267563) < 1E-2, TRUE)
+  expect_equal(abs(1 - E.mcRes@mean/841.7076) < 4E-3, TRUE)
+  expect_equal(abs(1 - E.mcRes@variance/209769.904267563) < 1.5E-2, TRUE)
 })
 
