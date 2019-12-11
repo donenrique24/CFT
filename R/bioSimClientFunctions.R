@@ -107,8 +107,9 @@ getNormals <- function(period, variables, id, latDeg, longDeg, elevM, averageOve
     myDataFrame <- NULL
     refDataFrame <- data.frame(id, latDeg, longDeg, elevM)
     listOfMonths <- J4R::getAllValuesFromArray(J4R::callJavaMethod("canforservutility.biosim.BioSimEnums$Month", "values"))
-    for (i in 1:length(listOfPlots)) {
-      plot <- listOfPlots[[i]]
+    i <- 0
+    for (plot in listOfPlots) {
+      i <- i + 1
       for (month  in listOfMonths) {
         subDataFrame <- refDataFrame[i,]
         monthName <- J4R::callJavaMethod(month, "name")
@@ -215,8 +216,9 @@ getClimateVariables <- function(fromYr, toYr, variables, id, latDeg, longDeg, el
 
   myDataFrame <- NULL
   refDataFrame <- data.frame(id, latDeg, longDeg, elevM)
-  for (i in 1:length(listOfPlots)) {
-    plot <- listOfPlots[[i]]
+  i <- 0
+  for (plot in listOfPlots) {
+    i <- i + 1
     for (year in fromYr:toYr) {
       subDataFrame <- refDataFrame[i,]
       subDataFrame[1, "date"] <- year

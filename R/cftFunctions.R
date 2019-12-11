@@ -21,7 +21,7 @@
 }
 
 .checkIfJ4RisAvailable <- function() {
-  minimumVersion <- c(1,0,2)
+  minimumVersion <- c(1,0,3)
   versionString <- paste(minimumVersion, collapse = ".")
   if (length(find.package("J4R", quiet= TRUE)) == 0 || utils::packageVersion("J4R") < versionString) {
     message(paste("Installing J4R version", versionString))
