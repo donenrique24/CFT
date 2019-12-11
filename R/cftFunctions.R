@@ -20,12 +20,24 @@
   .welcomeMessage()
 }
 
+.onUnload <- function(libpath) {
+  .internalShutdown()
+}
+
+.onDetach <- function(libpath) {
+  .internalShutdown()
+}
+
+.internalShutdown <- function() {
+  J4R::shutdownJava()
+}
+
 .checkIfJ4RisAvailable <- function() {
   minimumVersion <- c(1,0,3)
   versionString <- paste(minimumVersion, collapse = ".")
   if (length(find.package("J4R", quiet= TRUE)) == 0 || utils::packageVersion("J4R") < versionString) {
     message(paste("Installing J4R version", versionString))
-    urlString <- paste("https://sourceforge.net/projects/repiceasource/files/J4R_", versionString, ".tar.gz/download", sep="")
+    urlString <- paste("https://sourceforge.net/projects/repiceasource/files/J4R_", versionString, ".tar.gz", sep="")
     utils::install.packages(urlString, repos = NULL,  type="source")
   }
 }
