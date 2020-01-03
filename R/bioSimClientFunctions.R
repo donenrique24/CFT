@@ -143,6 +143,7 @@ getAnnualNormals <- function(period, variables, id, latDeg, longDeg, elevM) {
   return(getNormals(period, variables, id, latDeg, longDeg, elevM, CFT::allMonths))
 }
 
+
 #'
 #' Return the monthly normals for a period
 #'
