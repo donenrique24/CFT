@@ -42,3 +42,10 @@
   }
 }
 
+#'
+#' Extends the shutdownJava function of the J4R package
+#'
+#' @export
+shutdownJava <- function() {
+  J4R::shutdownJava()
+}

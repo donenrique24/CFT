@@ -63,7 +63,7 @@ test_that("Testing that 1951-1980 annual normals for Quebec and Sorel can be pro
 ### TODO implement test for the generated climate ###
 
 
-J4R::shutdownJava()
+shutdownJava()
 
 
 

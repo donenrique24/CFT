@@ -60,4 +60,4 @@ test_that("Testing forests", {
   expect_equal(abs(baselga[which(baselga$stratum == "parking"), "Nestedness"] - 0.06944214) < 1E-6, TRUE)
 })
 
-J4R::shutdownJava()
+shutdownJava()
