@@ -44,6 +44,7 @@ allMonths <- c("January", "February", "March", "April", "May", "June", "July", "
   return(jList)
 }
 
+
 #'
 #' Return the normals for a period
 #'
@@ -62,6 +63,12 @@ allMonths <- c("January", "February", "March", "April", "May", "June", "July", "
 #'
 #' @export
 getNormals <- function(period, variables, id, latDeg, longDeg, elevM, averageOverTheseMonths) {
+  # For debugging
+  # period <- "1981_2010"
+  # id <- locations$id
+  # latDeg <- locations$latDeg
+  # longDeg <- locations$longDeg
+  # elevM <- locations$elevM
   if (length(id) != length(latDeg)) {
     stop("The arguments id, latDeg, longDeg and elevM must have the same length!")
   }
@@ -72,9 +79,7 @@ getNormals <- function(period, variables, id, latDeg, longDeg, elevM, averageOve
       }
     }
   }
-  J4R::checkIfExtensionsContain(myJavaLibrary = "mrnf-foresttools.jar",
-                                packageName = "CFT",
-                                automaticRestart = TRUE)
+  .connectToCFT()
   jPlots <- .createBioSimPlots(latDeg, longDeg, elevM)
 
   jAverageOverTheseMonths <- J4R::createJavaObject("java.util.ArrayList")
@@ -87,44 +92,12 @@ getNormals <- function(period, variables, id, latDeg, longDeg, elevM, averageOve
   jVariables <- .createVariableList(variables)
   maps <- J4R::callJavaMethod("canforservutility.biosim.BioSimClient", "getNormals", jPeriod, jVariables, jPlots, jAverageOverTheseMonths)
   listOfPlots <- J4R::getAllValuesFromListObject(jPlots)
-  listOfVariables <- J4R::getAllValuesFromListObject(jVariables)
 
-  latDeg <- J4R::callJavaMethod(listOfPlots, "getLatitudeDeg")
-  longDeg <- J4R::callJavaMethod(listOfPlots, "getLongitudeDeg")
-  elevM <- J4R::callJavaMethod(listOfPlots, "getElevationM")
+  outputDataFrame <- .formatDataFrame(listOfPlots, maps, id)
 
-  if (isSummarized) {
-    myDataFrame <- data.frame(id, latDeg, longDeg, elevM)
-    i <- 0
-    for (plot in listOfPlots) {
-      i <- i + 1
-      for (variable in listOfVariables) {
-        variableName <- J4R::callJavaMethod(variable, "name")
-        myDataFrame[i, variableName] <- J4R::callJavaMethod(J4R::callJavaMethod(maps,"get", plot), "get", variable)
-      }
-    }
-  } else {
-    myDataFrame <- NULL
-    refDataFrame <- data.frame(id, latDeg, longDeg, elevM)
-    listOfMonths <- J4R::getAllValuesFromArray(J4R::callJavaMethod("canforservutility.biosim.BioSimEnums$Month", "values"))
-    i <- 0
-    for (plot in listOfPlots) {
-      i <- i + 1
-      for (month  in listOfMonths) {
-        subDataFrame <- refDataFrame[i,]
-        monthName <- J4R::callJavaMethod(month, "name")
-        subDataFrame[1, "month"] <- monthName
-        innerMap <- J4R::callJavaMethod(J4R::callJavaMethod(maps,"get", plot), "get", month)
-        for (variable in listOfVariables) {
-          variableName <- J4R::callJavaMethod(variable, "name")
-          subDataFrame[1, variableName] <- J4R::callJavaMethod(innerMap, "get", variable)
-        }
-        myDataFrame <- rbind(myDataFrame, subDataFrame)
-      }
-    }
-  }
-  return(myDataFrame)
+  return(outputDataFrame)
 }
+
 
 #'
 #' Return the annual normals for a period
@@ -166,18 +139,42 @@ getMonthlyNormals <- function(period, variables, id, latDeg, longDeg, elevM) {
 #'
 #' @export
 getModelList <- function() {
-  J4R::checkIfExtensionsContain(myJavaLibrary = "mrnf-foresttools.jar",
-                                packageName = "CFT",
-                                automaticRestart = TRUE)
+  .connectToCFT()
   return(J4R::getAllValuesFromListObject(J4R::callJavaMethod("canforservutility.biosim.BioSimClient", "getModelList")))
 }
+
+
+.formatDataFrame <- function(listOfPlots, maps, id) {
+  latDeg <- J4R::callJavaMethod(listOfPlots, "getLatitudeDeg")
+  longDeg <- J4R::callJavaMethod(listOfPlots, "getLongitudeDeg")
+  elevM <- J4R::callJavaMethod(listOfPlots, "getElevationM")
+
+  outputDataFrame <- NULL
+
+  for (i in 1:length(listOfPlots)) {
+    plot <- listOfPlots[[i]]
+    data.i <- J4R::callJavaMethod(maps,"get", plot)
+    data.i <- .convertJavaDataSetIntoDataFrame(data.i)
+    data.i$id <- id[i]
+    data.i$latDeg <- latDeg[i]
+    data.i$longDeg <- longDeg[i]
+    data.i$elevM <- elevM[i]
+    outputDataFrame <- rbind(outputDataFrame, data.i)
+  }
+
+  firstFields <- c("id", "latDeg", "longDeg", "elevM")
+  fieldnames <- colnames(outputDataFrame)
+  fieldnames <- c(firstFields, fieldnames[which(!(fieldnames %in% firstFields))])
+
+  return(outputDataFrame[,fieldnames])
+}
+
 
 #'
 #' Generates the climate for particular locations and applies a model on this generated climate.
 #'
 #' @param fromYr the starting date (yr) of the period (inclusive)
 #' @param toYr the ending date (yr) of the period (inclusive)
-#' @param variables the variables of interest typically a vector such as c("TN", "TX", "P") for minimum temperature, maximum temperature and precipitation
 #' @param id a vector with the ids of the plots
 #' @param latDeg the latitudes of the plots
 #' @param longDeg the longitudes of the plots
@@ -187,45 +184,35 @@ getModelList <- function() {
 #' computational burden and inconsistencies if different models are applied on the same locations.
 #'
 #' @export
-getClimateVariables <- function(fromYr, toYr, variables, id, latDeg, longDeg, elevM, modelName, isEphemeral) {
+getClimateVariables <- function(fromYr, toYr, id, latDeg, longDeg, elevM, modelName, isEphemeral) {
+  # For debugging
+  # fromYr <- 1998
+  # toYr <- 2006
+  # id <- locations$id
+  # latDeg <- locations$latDeg
+  # longDeg <- locations$longDeg
+  # elevM <- locations$elevM
+  # modelName <- "DegreeDay_Annual"
+  # isEphemeral <- F
   if (length(id) != length(latDeg)) {
     stop("The arguments id, latDeg, longDeg and elevM must have the same length!")
   }
-  J4R::checkIfExtensionsContain(myJavaLibrary = "mrnf-foresttools.jar",
-                                packageName = "CFT",
-                                automaticRestart = TRUE)
   listOfModels <- getModelList()
   if (!(modelName %in% listOfModels)) {
     stop(paste("The model", modelName, "is not recognized by BioSim. Please see the list of available models. Call the getModelList() function."))
   }
   jPlots <- .createBioSimPlots(latDeg, longDeg, elevM)
-  jVariables <- .createVariableList(variables)
 
   maps <- J4R::callJavaMethod("canforservutility.biosim.BioSimClient",
                       "getClimateVariables",
                       as.integer(fromYr),
                       as.integer(toYr),
-                      jVariables,
                       jPlots,
                       modelName,
                       isEphemeral)
   listOfPlots <- J4R::getAllValuesFromListObject(jPlots)
 
-  latDeg <- J4R::callJavaMethod(listOfPlots, "getLatitudeDeg")
-  longDeg <- J4R::callJavaMethod(listOfPlots, "getLongitudeDeg")
-  elevM <- J4R::callJavaMethod(listOfPlots, "getElevationM")
+  outputDataFrame <- .formatDataFrame(listOfPlots, maps, id)
 
-  myDataFrame <- NULL
-  refDataFrame <- data.frame(id, latDeg, longDeg, elevM)
-  i <- 0
-  for (plot in listOfPlots) {
-    i <- i + 1
-    for (year in fromYr:toYr) {
-      subDataFrame <- refDataFrame[i,]
-      subDataFrame[1, "date"] <- year
-      subDataFrame[1, modelName] <- J4R::callJavaMethod(J4R::callJavaMethod(maps,"get", plot), "get", year)
-      myDataFrame <- rbind(myDataFrame, subDataFrame)
-    }
-  }
-  return(myDataFrame)
+  return(outputDataFrame)
 }

@@ -4,15 +4,13 @@
 \alias{getClimateVariables}
 \title{Generates the climate for particular locations and applies a model on this generated climate.}
 \usage{
-getClimateVariables(fromYr, toYr, variables, id, latDeg, longDeg, elevM,
-  modelName, isEphemeral)
+getClimateVariables(fromYr, toYr, id, latDeg, longDeg, elevM, modelName,
+  isEphemeral)
 }
 \arguments{
 \item{fromYr}{the starting date (yr) of the period (inclusive)}
 
 \item{toYr}{the ending date (yr) of the period (inclusive)}
-
-\item{variables}{the variables of interest typically a vector such as c("TN", "TX", "P") for minimum temperature, maximum temperature and precipitation}
 
 \item{id}{a vector with the ids of the plots}
 
