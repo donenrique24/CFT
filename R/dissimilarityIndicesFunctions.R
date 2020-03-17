@@ -33,9 +33,7 @@
 #'
 #' @export
 createDissimilarityIndicesEstimator <- function() {
-  J4R::checkIfExtensionsContain(myJavaLibrary = "mrnf-foresttools.jar",
-                                packageName = "CFT",
-                                automaticRestart = TRUE)
+  .connectToCFT()
   print("Instantiating the estimator of dissimilarity indices...")
   msi <- J4R::createJavaObject("canforservutility.biodiversity.indices.MultipleSiteIndex")
   print("Done.")
@@ -58,6 +56,7 @@ createDissimilarityIndicesEstimator <- function() {
 #'
 #'@export
 createSample <- function(dataSet, plotIdField, speciesIdField) {
+  .connectToCFT()
   sample <- J4R::createJavaObject("java.util.HashMap")
 
   for (plotId in unique(dataSet[,plotIdField])) {

@@ -12,9 +12,9 @@
 # save(file = "./data/twoLocationsInSouthernQuebec.RData", twoLocationsInSouthernQuebec)
 
 locations <- CFT::twoLocationsInSouthernQuebec
+print(locations)
 
 variables <- c("TN","TX","P")
-averageOverTheseMonths <- c()
 
 normals <- getAnnualNormals("1981_2010", variables, locations$id, locations$latDeg, locations$longDeg, locations$elevM)
 
@@ -60,7 +60,39 @@ test_that("Testing that 1951-1980 annual normals for Quebec and Sorel can be pro
   expect_equal(abs(normals[which(normals$id == "Sorel"),"P"] - 952.2) < 1E-4, TRUE)
 })
 
-### TODO implement test for the generated climate ###
+summerMean <- getNormals("1981_2010", variables, locations$id, locations$latDeg, locations$longDeg, locations$elevM, c("June", "July", "August"))
+
+test_that("Testing that 1981-2010 summer normals for Quebec and Sorel can be properly retrieved", {
+  expect_equal(abs(summerMean[which(summerMean$id == "Quebec"),"TN"] - 12.52065) < 1E-4, TRUE)
+  expect_equal(abs(summerMean[which(summerMean$id == "Quebec"),"TX"] - 23.38587) < 1E-4, TRUE)
+  expect_equal(abs(summerMean[which(summerMean$id == "Quebec"),"P"] - 363.7) < 1E-4, TRUE)
+  expect_equal(abs(summerMean[which(summerMean$id == "Sorel"),"TN"] - 14.74891) < 1E-4, TRUE)
+  expect_equal(abs(summerMean[which(summerMean$id == "Sorel"),"TX"] - 25.24674) < 1E-4, TRUE)
+  expect_equal(abs(summerMean[which(summerMean$id == "Sorel"),"P"] - 302.9) < 1E-4, TRUE)
+})
+
+degreeDays <- getClimateVariables(1994, 2002, locations$id, locations$latDeg, locations$longDeg, locations$elevM, "DegreeDay_Annual", F)
+
+test_that("Testing degree-days between 1994 and 2004 for Quebec and Sorel can be properly retrieved", {
+  expect_equal(abs(degreeDays[which(degreeDays$id == "Quebec" & degreeDays$Year == 1994),"DD"] - 2802.15) < 1E-4, TRUE)
+  expect_equal(abs(degreeDays[which(degreeDays$id == "Quebec" & degreeDays$Year == 1995),"DD"] - 2825.00) < 1E-4, TRUE)
+  expect_equal(abs(degreeDays[which(degreeDays$id == "Quebec" & degreeDays$Year == 1996),"DD"] - 2742.65) < 1E-4, TRUE)
+  expect_equal(abs(degreeDays[which(degreeDays$id == "Quebec" & degreeDays$Year == 1997),"DD"] - 2538.80) < 1E-4, TRUE)
+  expect_equal(abs(degreeDays[which(degreeDays$id == "Quebec" & degreeDays$Year == 1998),"DD"] - 2881.85) < 1E-4, TRUE)
+  expect_equal(abs(degreeDays[which(degreeDays$id == "Quebec" & degreeDays$Year == 1999),"DD"] - 2946.05) < 1E-4, TRUE)
+  expect_equal(abs(degreeDays[which(degreeDays$id == "Quebec" & degreeDays$Year == 2000),"DD"] - 2667.60) < 1E-4, TRUE)
+  expect_equal(abs(degreeDays[which(degreeDays$id == "Quebec" & degreeDays$Year == 2001),"DD"] - 2913.65) < 1E-4, TRUE)
+  expect_equal(abs(degreeDays[which(degreeDays$id == "Quebec" & degreeDays$Year == 2002),"DD"] - 2697.20) < 1E-4, TRUE)
+  expect_equal(abs(degreeDays[which(degreeDays$id == "Sorel" & degreeDays$Year == 1994),"DD"] - 3312.80) < 1E-4, TRUE)
+  expect_equal(abs(degreeDays[which(degreeDays$id == "Sorel" & degreeDays$Year == 1995),"DD"] - 3382.15) < 1E-4, TRUE)
+  expect_equal(abs(degreeDays[which(degreeDays$id == "Sorel" & degreeDays$Year == 1996),"DD"] - 3258.50) < 1E-4, TRUE)
+  expect_equal(abs(degreeDays[which(degreeDays$id == "Sorel" & degreeDays$Year == 1997),"DD"] - 3069.95) < 1E-4, TRUE)
+  expect_equal(abs(degreeDays[which(degreeDays$id == "Sorel" & degreeDays$Year == 1998),"DD"] - 3525.50) < 1E-4, TRUE)
+  expect_equal(abs(degreeDays[which(degreeDays$id == "Sorel" & degreeDays$Year == 1999),"DD"] - 3659.65) < 1E-4, TRUE)
+  expect_equal(abs(degreeDays[which(degreeDays$id == "Sorel" & degreeDays$Year == 2000),"DD"] - 3197.30) < 1E-4, TRUE)
+  expect_equal(abs(degreeDays[which(degreeDays$id == "Sorel" & degreeDays$Year == 2001),"DD"] - 3524.25) < 1E-4, TRUE)
+  expect_equal(abs(degreeDays[which(degreeDays$id == "Sorel" & degreeDays$Year == 2002),"DD"] - 3232.50) < 1E-4, TRUE)
+})
 
 
 shutdownJava()

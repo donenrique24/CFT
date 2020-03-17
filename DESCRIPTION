@@ -1,7 +1,7 @@
 Package: CFT
 Type: Package
 Title: Biometric Models for Canadian Forests 
-Version: 0.1.3
+Version: 0.1.4
 Author: Mathieu Fortin
 Maintainer: Mathieu Fortin <mathieu.fortin.re@gmail.com>
 Description: Provide some models applied to forestry that were developed in the Canadian context. Rely on the J4R package and the Java library lerfob-foresttools which is published under a LGPL 3.0 license. See the website for further details. 
