@@ -94,6 +94,28 @@ test_that("Testing degree-days between 1994 and 2004 for Quebec and Sorel can be
   expect_equal(abs(degreeDays[which(degreeDays$id == "Sorel" & degreeDays$Year == 2002),"DD"] - 3232.50) < 1E-4, TRUE)
 })
 
+growingSeason <- getClimateVariables(1994, 2002, locations$id, locations$latDeg, locations$longDeg, locations$elevM, "GrowingSeason", F)
+
+test_that("Testing degree-days between 1994 and 2004 for Quebec and Sorel can be properly retrieved", {
+  expect_equal(abs(growingSeason[which(growingSeason$id == "Quebec" & growingSeason$Year == 1994),"Length"] - 172) < 1E-4, TRUE)
+  expect_equal(abs(growingSeason[which(growingSeason$id == "Quebec" & growingSeason$Year == 1995),"Length"] - 187) < 1E-4, TRUE)
+  expect_equal(abs(growingSeason[which(growingSeason$id == "Quebec" & growingSeason$Year == 1996),"Length"] - 171) < 1E-4, TRUE)
+  expect_equal(abs(growingSeason[which(growingSeason$id == "Quebec" & growingSeason$Year == 1997),"Length"] - 172) < 1E-4, TRUE)
+  expect_equal(abs(growingSeason[which(growingSeason$id == "Quebec" & growingSeason$Year == 1998),"Length"] - 179) < 1E-4, TRUE)
+  expect_equal(abs(growingSeason[which(growingSeason$id == "Quebec" & growingSeason$Year == 1999),"Length"] - 162) < 1E-4, TRUE)
+  expect_equal(abs(growingSeason[which(growingSeason$id == "Quebec" & growingSeason$Year == 2000),"Length"] - 171) < 1E-4, TRUE)
+  expect_equal(abs(growingSeason[which(growingSeason$id == "Quebec" & growingSeason$Year == 2001),"Length"] - 189) < 1E-4, TRUE)
+  expect_equal(abs(growingSeason[which(growingSeason$id == "Quebec" & growingSeason$Year == 2002),"Length"] - 169) < 1E-4, TRUE)
+  expect_equal(abs(growingSeason[which(growingSeason$id == "Sorel" & growingSeason$Year == 1994),"Length"] - 220) < 1E-4, TRUE)
+  expect_equal(abs(growingSeason[which(growingSeason$id == "Sorel" & growingSeason$Year == 1995),"Length"] - 205) < 1E-4, TRUE)
+  expect_equal(abs(growingSeason[which(growingSeason$id == "Sorel" & growingSeason$Year == 1996),"Length"] - 209) < 1E-4, TRUE)
+  expect_equal(abs(growingSeason[which(growingSeason$id == "Sorel" & growingSeason$Year == 1997),"Length"] - 184) < 1E-4, TRUE)
+  expect_equal(abs(growingSeason[which(growingSeason$id == "Sorel" & growingSeason$Year == 1998),"Length"] - 234) < 1E-4, TRUE)
+  expect_equal(abs(growingSeason[which(growingSeason$id == "Sorel" & growingSeason$Year == 1999),"Length"] - 218) < 1E-4, TRUE)
+  expect_equal(abs(growingSeason[which(growingSeason$id == "Sorel" & growingSeason$Year == 2000),"Length"] - 200) < 1E-4, TRUE)
+  expect_equal(abs(growingSeason[which(growingSeason$id == "Sorel" & growingSeason$Year == 2001),"Length"] - 216) < 1E-4, TRUE)
+  expect_equal(abs(growingSeason[which(growingSeason$id == "Sorel" & growingSeason$Year == 2002),"Length"] - 173) < 1E-4, TRUE)
+})
 
 shutdownJava()
 

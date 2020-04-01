@@ -153,6 +153,9 @@ getModelList <- function() {
 
   for (i in 1:length(listOfPlots)) {
     plot <- listOfPlots[[i]]
+    if (J4R::callJavaMethod(maps, "containsKey", plot) == F) {
+      stop(paste("Plot", i, "is not in the map"))
+    }
     data.i <- J4R::callJavaMethod(maps,"get", plot)
     data.i <- .convertJavaDataSetIntoDataFrame(data.i)
     data.i$id <- id[i]
@@ -211,6 +214,12 @@ getClimateVariables <- function(fromYr, toYr, id, latDeg, longDeg, elevM, modelN
                       modelName,
                       isEphemeral)
   listOfPlots <- J4R::getAllValuesFromListObject(jPlots)
+
+  mapSize <- J4R::callJavaMethod(maps, "size")
+  listSize <- J4R::callJavaMethod(jPlots, "size")
+  if (mapSize != listSize) {
+    print(paste("The map has size =", mapSize, "while the list has size =", listSize))
+  }
 
   outputDataFrame <- .formatDataFrame(listOfPlots, maps, id)
 
