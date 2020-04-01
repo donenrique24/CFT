@@ -74,10 +74,9 @@ shutdownJava <- function() {
   refArray <- NULL
   observations <- J4R::callJavaMethod(dataSetObject, "getObservations")
   observations <- J4R::getAllValuesFromListObject(observations)
-  obs <- observations[[1]]
   for (obs in observations) {
     array <- J4R::callJavaMethod(obs, "toArray")
-    array <- J4R::getAllValuesFromArray(array)
+    array <- as.list(J4R::getAllValuesFromArray(array))
     if (is.null(refArray)) {
       refArray <- array
     } else {
