@@ -2,7 +2,7 @@
 % Please edit documentation in R/ghgVarianceEstimatorsFunctions.R
 \name{createEstimate}
 \alias{createEstimate}
-\title{Constructs instance of the estimate class.}
+\title{Construct instance of the estimate class.}
 \usage{
 createEstimate(mean, variance, dist = "normal")
 }
@@ -18,5 +18,6 @@ the distribution is set to "normal"}
 an instance of the estimate class
 }
 \description{
-Constructs instance of the estimate class.
+This function returns an estimate that can later be used in the product of estimates in the context of
+greenhouse gas emissions.
 }

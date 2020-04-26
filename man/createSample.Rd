@@ -2,7 +2,7 @@
 % Please edit documentation in R/dissimilarityIndicesFunctions.R
 \name{createSample}
 \alias{createSample}
-\title{Creates a Sample}
+\title{Create a Sample}
 \usage{
 createSample(dataSet, plotIdField, speciesIdField)
 }
@@ -17,6 +17,5 @@ createSample(dataSet, plotIdField, speciesIdField)
 a java.object instance that represents a Map object in the Java environment
 }
 \description{
-It creates a sample from which the dissimilarity indices
-can be estimated.
+It creates a sample from which the dissimilarity indices can be estimated.
 }

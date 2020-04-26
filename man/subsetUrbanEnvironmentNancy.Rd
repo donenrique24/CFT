@@ -4,7 +4,9 @@
 \name{subsetUrbanEnvironmentNancy}
 \alias{subsetUrbanEnvironmentNancy}
 \title{Data from Urban Environments in Nancy, France}
-\format{An object of class \code{data.frame} with 287 rows and 8 columns.}
+\format{
+An object of class \code{data.frame} with 287 rows and 8 columns.
+}
 \usage{
 data(subsetUrbanEnvironmentNancy)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/ghgVarianceEstimatorsFunctions.R
 \name{plotEstimate}
 \alias{plotEstimate}
-\title{Plots the distribution of an estimate.}
+\title{Plot the distribution of an estimate.}
 \usage{
 plotEstimate(estimate)
 }
@@ -10,5 +10,5 @@ plotEstimate(estimate)
 \item{estimate}{an instance of the estimate class}
 }
 \description{
-Plots the distribution of an estimate.
+Plot the distribution of an estimate.
 }

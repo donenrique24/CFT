@@ -10,6 +10,6 @@ createDissimilarityIndicesEstimator()
 a java.object instance
 }
 \description{
-It creates a java.object that will compute the estimate of dissimilarity
+It creates a java.object that can compute the estimate of dissimilarity
 indices of Simpson, Sorensen and nestedness.
 }

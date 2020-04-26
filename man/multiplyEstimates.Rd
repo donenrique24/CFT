@@ -2,7 +2,7 @@
 % Please edit documentation in R/ghgVarianceEstimatorsFunctions.R
 \name{multiplyEstimates}
 \alias{multiplyEstimates}
-\title{Computes the products of several estimates under different methods.}
+\title{Compute the products of several estimates under different methods.}
 \usage{
 multiplyEstimates(..., factor = 1, method = "Goodman", realMC = 5000)
 }
@@ -23,5 +23,6 @@ instead of an estimate instance}
 an instance of the estimate or the monteCarloEstimate class
 }
 \description{
-Computes the products of several estimates under different methods.
+This function implements five variance estimators in the context of greenhouse gas emissions
+estimates based on products.
 }
