@@ -4,7 +4,7 @@
 \name{estimate-class}
 \alias{estimate-class}
 \alias{estimate}
-\title{A class that contains a point and a variance estimates.}
+\title{A class that contains a point and a variance estimates for greenhouse gas emissions.}
 \description{
-A class that contains a point and a variance estimates.
+A class that contains a point and a variance estimates for greenhouse gas emissions.
 }

@@ -26,7 +26,7 @@
 #'
 #' Instantiate an Estimator of Dissimilarity Indices
 #'
-#' It creates a java.object that will compute the estimate of dissimilarity
+#' It creates a java.object that can compute the estimate of dissimilarity
 #' indices of Simpson, Sorensen and nestedness.
 #'
 #' @return a java.object instance
@@ -43,10 +43,9 @@ createDissimilarityIndicesEstimator <- function() {
 
 
 #'
-#' Creates a Sample
+#' Create a Sample
 #'
-#' It creates a sample from which the dissimilarity indices
-#' can be estimated.
+#' It creates a sample from which the dissimilarity indices can be estimated.
 #'
 #'@param dataSet a data.frame object
 #'@param plotIdField a character string which stands for the field that contains the plot ids.
@@ -82,10 +81,21 @@ createSample <- function(dataSet, plotIdField, speciesIdField) {
 
 
 #'
-#' Estimates Dissimilarity Indices
+#' Estimate Dissimilarity Indices
 #'
-#' It estimates the dissimilarity indices of Simpson, Sorensen and
+#' This function computes an estimate of the dissimilarity indices of Simpson, Sorensen and
 #' nestedness from a sample.
+#'
+#' The processing of this function is done in Java using the J4R package. In order to use this function,
+#' the user must first run the createDissimilarityIndicesEstimator function which creates a Java object that
+#' can estimate the dissimilarity. The result of the createDissimilarityIndicesEstimator function must be
+#' stored in a variable and passed to this function.
+#'
+#' A sample of plots with species observation must also be intantiated using the createSample function.
+#' The result of the createSample function is the second parameter of this function.
+#'
+#' Finally, the user must provide the population size, that is the number of plots that fit in this population.
+#'
 #'
 #' @param dissimilarityEstimator a java.object that can estimate the dissimilarity indices. It
 #' should be generated using the createDissimilarityIndicesEstimator function
@@ -94,6 +104,40 @@ createSample <- function(dataSet, plotIdField, speciesIdField) {
 #' @param populationSize the number of units (plots) in the population
 #'
 #' @return a data.frame object with the estimated dissimilarity indices and their standard errors
+#'
+#' @examples
+#'
+#' ### An example using the subsetUrbanEnvironmentNancy dataset ###
+#'
+#' dataReleves <- CFT::subsetUrbanEnvironmentNancy
+#'
+#' dissEst <- createDissimilarityIndicesEstimator()
+#' strataList <- unique(dataReleves$Stratum)
+#' output <- NULL
+#' baselga <- NULL
+#' stratum <- strataList[1]
+#'
+#' for (stratum in strataList) {
+#'   releve.s <- dataReleves[which(dataReleves$Stratum == stratum),]
+#'   if (stratum == "forest") {
+#'     populationSize <- 3089 * 10000 / (pi * 5^2)
+#'   } else if (stratum == "parking") {
+#'     populationSize <- 501 * 10000 / (pi * 5^2)
+#'   } else {
+#'     populationSize <- 100000
+#'   }
+#'
+#'   sample <- createSample(releve.s, "CODE_POINT", "Espece")
+#'   indices <- getDissimilarityEstimates(dissEst, sample, populationSize)
+#'   indices$stratum <- stratum
+#'   output <- rbind(output, indices)
+#'   baselga.s <- getBaselgaDissimilarityIndices(dissEst, sample)
+#'   baselga.s$stratum <- stratum
+#'   baselga <- rbind(baselga, baselga.s)
+#' }
+
+#' @seealso createDissimilarityIndicesEstimator
+#' @seealso createSample
 #'
 #' @export
 getDissimilarityEstimates <- function(dissimilarityEstimator, sample, populationSize) {
@@ -136,16 +180,22 @@ getDissimilarityEstimates <- function(dissimilarityEstimator, sample, population
 
 
 #'
-#' Calculates Baselga's Dissimilarity Indices
+#' Calculate Baselga's Dissimilarity Indices
 #'
-#' It computes Baselga's multiple-site dissimilarity indices of Simpson, Sorensen and
+#' This function computes Baselga's multiple-site dissimilarity indices of Simpson, Sorensen and
 #' nestedness from a set of assemblages.
+#'
+#' It assumes that the sample is exhaustive, that it is a census of the  population. If the sample is
+#' not exhaustive (the vast majority of the cases), then the getDissimilarityEstimates function should
+#' be used.
 #'
 #' @param dissimilarityEstimator a java.object that can compute or estimate the dissimilarity indices. It
 #' should be generated using the createDissimilarityIndicesEstimator function
 #' @param sample a java.object instance that stands for a Map in the Java environment. It should be
 #' generated using the createSample function
 #' @return a data.frame object with the estimated dissimilarity indices and their standard errors
+#'
+#' @seealso getDissimilarityEstimates
 #'
 #' @export
 getBaselgaDissimilarityIndices <- function(dissimilarityEstimator, sample) {

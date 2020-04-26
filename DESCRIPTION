@@ -1,13 +1,16 @@
 Package: CFT
 Type: Package
 Title: Biometric Models for Canadian Forests 
-Version: 0.1.4
+Version: 0.1.5
 Author: Mathieu Fortin
 Maintainer: Mathieu Fortin <mathieu.fortin.re@gmail.com>
-Description: Provide some models applied to forestry that were developed in the Canadian context. Rely on the J4R package and the Java library lerfob-foresttools which is published under a LGPL 3.0 license. See the website for further details. 
+Description: Provide some models applied to forestry that were developed in the Canadian context. 
+   At the moment, this package implements (i) an estimator of the beta diversity and (ii) an estimator
+   of GHG emissions. The package relies on the J4R package and the Java libraries repicea and mrnf-foresttools which are licensed under the LGPL 3.0 license. See the website for further details. 
 URL: https://sourceforge.net/p/mrnfforesttools/wiki/CFT/
-Depends: R (>= 2.10)
+Depends: R (>= 3.4.0)
 Imports: 
+    J4R (>= 1.0.7),
     graphics,
     methods, 
     stats, 
@@ -15,7 +18,7 @@ Imports:
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.1
-SystemRequirements: Java
+RoxygenNote: 7.1.0
+SystemRequirements: Java 8
 Suggests: 
     testthat

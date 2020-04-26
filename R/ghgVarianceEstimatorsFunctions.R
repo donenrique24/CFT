@@ -9,7 +9,7 @@ parametricDistributions <- c("normal", "uniform", "lognormal")
 allowedDistributions <- c(parametricDistributions, "unknown")
 
 #'
-#' A class that contains a point and a variance estimates.
+#' A class that contains a point and a variance estimates for greenhouse gas emissions.
 #'
 #' @export estimate
 estimate <- setClass("estimate", slots = c(mean = "numeric", variance = "numeric", stdDev = "numeric", dist = "character"))
@@ -22,7 +22,10 @@ estimate <- setClass("estimate", slots = c(mean = "numeric", variance = "numeric
 monteCarloEstimate <- setClass("monteCarloEstimate", contains="estimate", slots = c(real = "numeric"))
 
 #'
-#' Constructs instance of the estimate class.
+#' Construct instance of the estimate class.
+#'
+#' This function returns an estimate that can later be used in the product of estimates in the context of
+#' greenhouse gas emissions.
 #'
 #' @param mean the point estimate
 #' @param variance the variance estimate
@@ -67,7 +70,10 @@ createEstimate <- function(mean, variance, dist = "normal") {
 
 
 #'
-#' Computes the products of several estimates under different methods.
+#' Compute the products of several estimates under different methods.
+#'
+#' This function implements five variance estimators in the context of greenhouse gas emissions
+#' estimates based on products.
 #'
 #' @param ... a series of instances of the estimate class
 #' @param factor a multiplicative factor. The mean and the variance of the resulting
@@ -130,7 +136,7 @@ multiplyEstimates <- function(..., factor = 1, method="Goodman", realMC=5000) {
 }
 
 #'
-#' Extends the summary function to the estimate class.
+#' Extend the summary function to the estimate class.
 #'
 #' @param object an instance of the estimate class
 #' @param ... useless parameters
@@ -147,7 +153,7 @@ summary.estimate <- function(object, ...) {
 }
 
 #'
-#' Plots the distribution of an estimate.
+#' Plot the distribution of an estimate.
 #'
 #' @param estimate an instance of the estimate class
 #'

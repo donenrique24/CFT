@@ -2,7 +2,7 @@
 % Please edit documentation in R/ghgVarianceEstimatorsFunctions.R
 \name{summary.estimate}
 \alias{summary.estimate}
-\title{Extends the summary function to the estimate class.}
+\title{Extend the summary function to the estimate class.}
 \usage{
 \method{summary}{estimate}(object, ...)
 }
@@ -15,5 +15,5 @@
 a character string with the mean, the variance and the distribution of the estimate
 }
 \description{
-Extends the summary function to the estimate class.
+Extend the summary function to the estimate class.
 }

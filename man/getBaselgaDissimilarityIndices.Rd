@@ -2,7 +2,7 @@
 % Please edit documentation in R/dissimilarityIndicesFunctions.R
 \name{getBaselgaDissimilarityIndices}
 \alias{getBaselgaDissimilarityIndices}
-\title{Calculates Baselga's Dissimilarity Indices}
+\title{Calculate Baselga's Dissimilarity Indices}
 \usage{
 getBaselgaDissimilarityIndices(dissimilarityEstimator, sample)
 }
@@ -17,6 +17,14 @@ generated using the createSample function}
 a data.frame object with the estimated dissimilarity indices and their standard errors
 }
 \description{
-It computes Baselga's multiple-site dissimilarity indices of Simpson, Sorensen and
+This function computes Baselga's multiple-site dissimilarity indices of Simpson, Sorensen and
 nestedness from a set of assemblages.
+}
+\details{
+It assumes that the sample is exhaustive, that it is a census of the  population. If the sample is
+not exhaustive (the vast majority of the cases), then the getDissimilarityEstimates function should
+be used.
+}
+\seealso{
+getDissimilarityEstimates
 }
