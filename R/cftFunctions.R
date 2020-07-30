@@ -11,9 +11,6 @@
   packageStartupMessage("For more information, visit https://sourceforge.net/p/mrnfforesttools/wiki/CFT/ .")
 }
 
-# .onLoad <- function(libname, pkgname) {
-#   .checkIfJ4RisAvailable()
-# }
 
 .onAttach <- function(libname, pkgname) {
   .welcomeMessage()
