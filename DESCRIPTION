@@ -5,8 +5,8 @@ Version: 0.2.0
 Author: Mathieu Fortin
 Maintainer: Mathieu Fortin <mathieu.fortin.re@gmail.com>
 Description: Provide some models applied to forestry that were developed in the Canadian context. 
-   At the moment, this package only implements (i) an estimator
-   of GHG emissions and a volume model. 
+   This package implements some estimators for GHG emissions and a volume model for 26 species 
+   in Quebec, Canada.
 URL: https://sourceforge.net/p/mrnfforesttools/wiki/CFT/
 Depends: R (>= 3.4.0)
 Imports: 
