@@ -1,21 +1,21 @@
 Package: CFT
 Type: Package
 Title: Biometric Models for Canadian Forests 
-Version: 0.1.6
+Version: 0.2.0
 Author: Mathieu Fortin
 Maintainer: Mathieu Fortin <mathieu.fortin.re@gmail.com>
 Description: Provide some models applied to forestry that were developed in the Canadian context. 
    At the moment, this package only implements (i) an estimator
-   of GHG emissions. 
+   of GHG emissions and a volume model. 
 URL: https://sourceforge.net/p/mrnfforesttools/wiki/CFT/
 Depends: R (>= 3.4.0)
 Imports: 
-    J4R (>= 1.0.8),
+    J4R (>= 1.1.0),
     graphics,
     methods, 
     stats, 
     utils
-License: GPL-3
+License: LGPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1

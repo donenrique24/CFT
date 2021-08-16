@@ -31,7 +31,7 @@
 #' @export
 shutdownJava <- function() {
   if (J4R::isConnectedToJava()) {
-    J4R::shutdownJava()
+    J4R::shutdownClient()
   }
 }
 
@@ -70,20 +70,20 @@ shutdownJava <- function() {
 
 .loadREpicea <- function() {
   if (!J4R::checkIfClasspathContains("repicea.jar")) {
-    J4R::addUrlToClassPath("repicea.jar", packageName = "CFT")
+    J4R::addToClassPath("repicea.jar", packageName = "CFT")
   }
   if (.getSimpleJavaVersion() > 8) {
     if (!J4R::checkIfClasspathContains("istack-commons-runtime.jar")) {
-      J4R::addUrlToClassPath("istack-commons-runtime.jar", packageName = "CFT")
+      J4R::addToClassPath("istack-commons-runtime.jar", packageName = "CFT")
     }
     if (!J4R::checkIfClasspathContains("jakarta.activation-api.jar")) {
-      J4R::addUrlToClassPath("jakarta.activation-api.jar", packageName = "CFT")
+      J4R::addToClassPath("jakarta.activation-api.jar", packageName = "CFT")
     }
     if (!J4R::checkIfClasspathContains("jakarta.xml.bind-api.jar")) {
-      J4R::addUrlToClassPath("jakarta.xml.bind-api.jar", packageName = "CFT")
+      J4R::addToClassPath("jakarta.xml.bind-api.jar", packageName = "CFT")
     }
     if (!J4R::checkIfClasspathContains("jaxb-runtime.jar")) {
-      J4R::addUrlToClassPath("jaxb-runtime.jar", packageName = "CFT")
+      J4R::addToClassPath("jaxb-runtime.jar", packageName = "CFT")
     }
   }
 }
@@ -113,7 +113,7 @@ shutdownJava <- function() {
 
 .loadMrnfForesttools <- function() {
   if (!J4R::checkIfClasspathContains("mrnf-foresttools.jar")) {
-    J4R::addUrlToClassPath("mrnf-foresttools.jar", packageName = "CFT")
+    J4R::addToClassPath("mrnf-foresttools.jar", packageName = "CFT")
   }
 }
 

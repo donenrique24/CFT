@@ -3,6 +3,8 @@
 S3method(summary,estimate)
 export(createEstimate)
 export(estimate)
+export(getUnderbarkMerchantableVolumeDm3)
+export(getUnderbarkMerchantableVolumeSpeciesList)
 export(monteCarloEstimate)
 export(multiplyEstimates)
 export(plotEstimate)
