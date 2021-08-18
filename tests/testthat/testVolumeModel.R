@@ -50,5 +50,17 @@ test_that("Testing that unrecognized code fails", {
 })
 
 
+#load("./tests/testthat/DummyData.RData")
+load("DummyData.RData")
+
+volPredNew <- getUnderbarkMerchantableVolumeDm3(Dummy$ESSENCE, Dummy$DHP, Dummy$Hauteur)
+
+#save(volPred, file = "./tests/testthat/refVolPred.RData")
+
+load("refVolPred.RData")
+
+test_that("Testing that Gabriel's bug (REpicea Bug #63) is fixed", {
+  expect_equal(any(abs(volPred - volPredNew) > 0), F)
+})
 
 shutdownJava()
